@@ -1,13 +1,44 @@
 const express = require("express");
-const router = express.Router(); // ✅ Define router here
+const router = express.Router();
+const Proposal = require("../models/Proposal");
+const adminMiddleware = require("../middleware/adminMiddleware");
 
-const authMiddleware = require("../middleware/authMiddleware");  // Import as default
-const adminMiddleware = require("../middleware/adminMiddleware"); // Import adminMiddleware as default
-const { getAdminProposals } = require("../controllers/adminController");
+// Get all proposals for Admin
+router.get("/proposals", adminMiddleware, async (req, res) => {
+  try {
+    const proposals = await Proposal.find();
+    res.json(proposals);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching proposals" });
+  }
+});
 
-console.log("getAdminProposals:", getAdminProposals);  // Debugging
+// Approve proposal
+router.put("/proposals/:id/approve", adminMiddleware, async (req, res) => {
+  try {
+    const proposal = await Proposal.findByIdAndUpdate(
+      req.params.id,
+      { status: "Approved" },
+      { new: true }
+    );
+    res.json(proposal);
+  } catch (err) {
+    res.status(500).json({ message: "Error approving proposal" });
+  }
+});
 
-// Define the route correctly
-router.get("/proposals", authMiddleware, adminMiddleware, getAdminProposals);
+// Reject proposal
+router.put("/proposals/:id/reject", adminMiddleware, async (req, res) => {
+  try {
+    const proposal = await Proposal.findByIdAndUpdate(
+      req.params.id,
+      { status: "Rejected" },
+      { new: true }
+    );
+    res.json(proposal);
+  } catch (err) {
+    res.status(500).json({ message: "Error rejecting proposal" });
+  }
+});
 
-module.exports = router;  // ✅ Ensure router is exported
+module.exports = router;

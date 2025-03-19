@@ -1,45 +1,42 @@
 import React from 'react';
-import { Link, useNavigate } from "react-router-dom";
-import { getToken, removeToken } from "../auth";
+import { Link, useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 const Navbar = () => {
+  const { user, setUser } = useUser();
   const navigate = useNavigate();
-  const token = getToken();
 
   const handleLogout = () => {
-    removeToken();
+    localStorage.removeItem('token');
+    setUser(null);
     navigate('/login');
   };
-  // Get the user role from localStorage
 
   return (
-    <nav className="bg-gray-800 p-4">
-      <ul className="flex space-x-4">
-        <li>
-          <a href="/submit-proposal" className="text-white">Submit Proposal</a>
-        </li>
-        <li>
-          <a href="/view-proposals" className="text-white">View Proposals</a>
-        </li>
-        {!token && (
+    <nav className="flex justify-between p-4 bg-blue-600 text-white">
+      <div className="flex gap-4">
+        {user && (
           <>
-            <Link to="/register" className={"mx-2 hover:underline text-white"}>
-              Register
-            </Link>
-            <Link to="/login" className="mx-2 hover:underline text-white">
-              Login
-            </Link>
+            <Link to="/submit-proposal">Submit Proposal</Link>
+            <Link to="/view-proposals">View Proposals</Link>
           </>
         )}
-        {token && (
-          <button
-            onClick={handleLogout}
-            className="mx-2 hover:underline bg-red-600 px-2 py-1 rounded"
-          >
-            Logout
-          </button>
+      </div>
+      <div className="flex gap-4">
+        {user ? (
+          <>
+            <span>{user.name} ({user.role})</span>
+            <button onClick={handleLogout} className="bg-red-500 px-2 rounded">
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Register</Link>
+          </>
         )}
-      </ul>
+      </div>
     </nav>
   );
 };

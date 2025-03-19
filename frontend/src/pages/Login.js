@@ -20,9 +20,19 @@ export default function Login() {
       const data = await res.json();
 
       if (res.ok && data.token) {
+        // Store token and role
         setToken(data.token);
+        localStorage.setItem("role", data.role); // Store role here!
+
         setError("");
-        navigate("/view-proposals"); // Redirect after login
+
+        // Redirect based on role
+        if (data.role === "admin") {
+          navigate("/admin"); // Admin portal
+        } else {
+          navigate("/view-proposals"); // Member proposals view
+        }
+
       } else {
         setError(data.message || "Invalid credentials");
       }

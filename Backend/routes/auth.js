@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const authenticateToken = require('../middleware/authenticateToken');
 
 const MEMBER_CODE = process.env.MEMBER_CODE;
 const ADMIN_CODE = process.env.ADMIN_CODE;  // New environment variable for admin code
@@ -52,11 +53,26 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign({ username: user.username, role: user.role }, JWT_SECRET, { expiresIn: "1h" });
-    res.json({ token });
+
+    // SEND role info back!
+    res.json({
+      token,
+      user: { username: user.username, role: user.role }
+    });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
 
+router.get('/me', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('username role');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.json({ username: user.username, role: user.role });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 module.exports = router;

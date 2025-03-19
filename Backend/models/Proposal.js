@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
-const proposalSchema = new mongoose.Schema({
+const ProposalSchema = new mongoose.Schema({
   title: String,
   description: String,
   date: String,
   username: String,
-  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' } // NEW
+  status: { type: String, default: 'Pending' } // Add this
 });
 
-module.exports = mongoose.model('Proposal', proposalSchema);
+module.exports = mongoose.model('Proposal', ProposalSchema);

@@ -1,37 +1,44 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar"; // Import the Navbar component
-import LoginPage from "./pages/Login";
-import RegisterPage from "./pages/Register"; // Import RegisterPage component
-import SubmitProposalPage from "./pages/SubmitProposal";
-import ViewProposalsPage from "./pages/ViewProposals";
-import ProtectedRoute from "./ProtectedRoute";
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import LoginPage from './pages/Login';
+import RegisterPage from './pages/Register';
+import SubmitProposal from './pages/SubmitProposal';
+import ViewProposals from './pages/ViewProposals';
+import Navbar from './components/Navbar';
+import ProtectedRoute from './ProtectedRoute';
+import { useUser } from './context/UserContext';
 
 function App() {
+  const { loading } = useUser(); // Use loading for preventing flash
+
+  if (loading) return <div className="text-center mt-10">Loading...</div>;
+
   return (
-    <Router>
-      <Navbar /> {/* Add the Navbar here */}
+    <>
+      <Navbar />
       <Routes>
+        <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} /> {/* Add this line */}
-        <Route 
-          path="/submit-proposal" 
+        <Route path="/register" element={<RegisterPage />} />
+        <Route
+          path="/submit-proposal"
           element={
             <ProtectedRoute>
-              <SubmitProposalPage />
+              <SubmitProposal />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/view-proposals" 
+        <Route
+          path="/view-proposals"
           element={
             <ProtectedRoute>
-              <ViewProposalsPage />
+              <ViewProposals />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route path="*" element={<LoginPage />} /> {/* Default */}
+        <Route path="*" element={<h2>404 Page Not Found</h2>} />
       </Routes>
-    </Router>
+    </>
   );
 }
 
