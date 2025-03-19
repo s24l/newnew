@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import { getToken, removeToken } from "../auth";
+import { getToken, getUserRole, removeToken } from "../auth";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const token = getToken();
+  const role = getUserRole();
 
   const handleLogout = () => {
     removeToken();
@@ -14,12 +15,21 @@ const Navbar = () => {
     <nav className="bg-gray-900 p-4 text-white flex justify-between">
       <div className="text-lg font-semibold">Student Club Proposals</div>
       <div>
-        <Link to="/view-proposals" className="mx-2 hover:underline">
-          View Proposals
-        </Link>
-        <Link to="/submit-proposal" className="mx-2 hover:underline">
-          Submit Proposal
-        </Link>
+        {token && (
+          <>
+            <Link to="/view-proposals" className="mx-2 hover:underline">
+              View Proposals
+            </Link>
+            <Link to="/submit-proposal" className="mx-2 hover:underline">
+              Submit Proposal
+            </Link>
+            {role === 'admin' && (
+              <Link to="/admin" className="mx-2 hover:underline">
+                Admin Panel
+              </Link>
+            )}
+          </>
+        )}
 
         {!token && (
           <>

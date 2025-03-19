@@ -1,14 +1,13 @@
-// src/auth.js
+export function saveToken(token) {
+  localStorage.setItem("token", token);
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  localStorage.setItem("role", payload.role); // Save role
+}
 
-export const setToken = (token) => {
-    localStorage.setItem('token', token);
-  };
-  
-  export const getToken = () => {
-    return localStorage.getItem('token');
-  };
-  
-  export const removeToken = () => {
-    localStorage.removeItem('token');
-  };
-  
+export function getToken() {
+  return localStorage.getItem("token");
+}
+
+export function getUserRole() {
+  return localStorage.getItem("role");
+}

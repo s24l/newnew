@@ -2,10 +2,10 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-
 const authRoutes = require("./routes/auth");
 const proposalsRoutes = require("./routes/proposals");
-const authMiddleware = require("./middleware/authMiddleware");
+const adminRoutes = require("./routes/admin"); 
+const authMiddleware = require('./middleware/authMiddleware');
 
 const app = express();
 
@@ -22,7 +22,8 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/proposals", authMiddleware, proposalsRoutes); // PROTECTED!
+app.use("/api/proposals", authMiddleware, proposalsRoutes); // PROTECTED proposals route
+app.use("/api/admin", authMiddleware, adminRoutes); // ✅ ADD admin route here & protect it!
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
