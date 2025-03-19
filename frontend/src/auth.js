@@ -11,3 +11,10 @@ export function getToken() {
 export function getUserRole() {
   return localStorage.getItem("role");
 }
+
+export const removeToken = () => {
+  localStorage.removeItem("token");
+};
+export const setToken = (token) => {
+  localStorage.setItem("token", token);
+};

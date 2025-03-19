@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { getToken, getUserRole } from '../auth';
+import { getToken, getUserRole } from './auth';
 import { toast } from 'react-toastify';
 
 const ProtectedRoute = ({ children, roleRequired }) => {

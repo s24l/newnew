@@ -1,31 +1,13 @@
 const express = require("express");
-const router = express.Router();
-const { authMiddleware, adminMiddleware } = require("../middleware/authMiddleware");
-const Proposal = require("../models/Proposal");
+const router = express.Router(); // ✅ Define router here
 
-// GET all proposals for admin
-router.get("/proposals", authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const proposals = await Proposal.find();
-    res.json(proposals);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+const authMiddleware = require("../middleware/authMiddleware");  // Import as default
+const adminMiddleware = require("../middleware/adminMiddleware"); // Import adminMiddleware as default
+const { getAdminProposals } = require("../controllers/adminController");
 
-// Approve a proposal
-router.put("/proposals/:id/approve", authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const proposal = await Proposal.findById(req.params.id);
-    if (!proposal) return res.status(404).json({ message: "Proposal not found" });
+console.log("getAdminProposals:", getAdminProposals);  // Debugging
 
-    proposal.status = "Approved";
-    await proposal.save();
+// Define the route correctly
+router.get("/proposals", authMiddleware, adminMiddleware, getAdminProposals);
 
-    res.json({ message: "Proposal approved" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-module.exports = router;
+module.exports = router;  // ✅ Ensure router is exported
