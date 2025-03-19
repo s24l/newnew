@@ -1,26 +1,43 @@
 import React from 'react';
+import { Link, useNavigate } from "react-router-dom";
+import { getToken, removeToken } from "../auth";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const token = getToken();
+
+  const handleLogout = () => {
+    removeToken();
+    navigate('/login');
+  };
   // Get the user role from localStorage
-  const userRole = localStorage.getItem('role');
 
   return (
     <nav className="bg-gray-800 p-4">
       <ul className="flex space-x-4">
-        <li>
-          <a href="/" className="text-white">Home</a>
-        </li>
         <li>
           <a href="/submit-proposal" className="text-white">Submit Proposal</a>
         </li>
         <li>
           <a href="/view-proposals" className="text-white">View Proposals</a>
         </li>
-        {/* Conditionally render admin message */}
-        {userRole === 'admin' && (
-          <li>
-            <span className="text-green-500">You are logged in as an Admin</span>
-          </li>
+        {!token && (
+          <>
+            <Link to="/register" className={"mx-2 hover:underline text-white"}>
+              Register
+            </Link>
+            <Link to="/login" className="mx-2 hover:underline text-white">
+              Login
+            </Link>
+          </>
+        )}
+        {token && (
+          <button
+            onClick={handleLogout}
+            className="mx-2 hover:underline bg-red-600 px-2 py-1 rounded"
+          >
+            Logout
+          </button>
         )}
       </ul>
     </nav>
