@@ -1,56 +1,28 @@
-import { Link, useNavigate } from "react-router-dom";
-import { getToken, getUserRole, removeToken } from "../auth";
+import React from 'react';
 
 const Navbar = () => {
-  const navigate = useNavigate();
-  const token = getToken();
-  const role = getUserRole();
-
-  const handleLogout = () => {
-    removeToken();
-    navigate('/login');
-  };
+  // Get the user role from localStorage
+  const userRole = localStorage.getItem('role');
 
   return (
-    <nav className="bg-gray-900 p-4 text-white flex justify-between">
-      <div className="text-lg font-semibold">Student Club Proposals</div>
-      <div>
-        {token && (
-          <>
-            <Link to="/view-proposals" className="mx-2 hover:underline">
-              View Proposals
-            </Link>
-            <Link to="/submit-proposal" className="mx-2 hover:underline">
-              Submit Proposal
-            </Link>
-            {role === 'admin' && (
-              <Link to="/admin" className="mx-2 hover:underline">
-                Admin Panel
-              </Link>
-            )}
-          </>
+    <nav className="bg-gray-800 p-4">
+      <ul className="flex space-x-4">
+        <li>
+          <a href="/" className="text-white">Home</a>
+        </li>
+        <li>
+          <a href="/submit-proposal" className="text-white">Submit Proposal</a>
+        </li>
+        <li>
+          <a href="/view-proposals" className="text-white">View Proposals</a>
+        </li>
+        {/* Conditionally render admin message */}
+        {userRole === 'admin' && (
+          <li>
+            <span className="text-green-500">You are logged in as an Admin</span>
+          </li>
         )}
-
-        {!token && (
-          <>
-            <Link to="/register" className="mx-2 hover:underline">
-              Register
-            </Link>
-            <Link to="/login" className="mx-2 hover:underline">
-              Login
-            </Link>
-          </>
-        )}
-
-        {token && (
-          <button
-            onClick={handleLogout}
-            className="mx-2 hover:underline bg-red-600 px-2 py-1 rounded"
-          >
-            Logout
-          </button>
-        )}
-      </div>
+      </ul>
     </nav>
   );
 };
